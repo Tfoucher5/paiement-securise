@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\CarteCredit;
@@ -20,8 +21,6 @@ class CarteCreditController extends Controller
             $cartes = CarteCredit::where('user_id', auth()->user()->id)->get();
             return view('cartes.index', compact('cartes'));
         }
-
-
     }
 
     /**
@@ -37,29 +36,26 @@ class CarteCreditController extends Controller
      */
     public function store(CarteCreditRequest $request)
     {
-        // Si la validation passe, les données sont déjà validées et prêtes à être utilisées
-        $validatedData = $request->validated(); // Récupère les données validées
+        $validatedData = $request->validated();
 
-        // Nettoyage du numéro de carte
         $numero = str_replace(['-', ' '], '', $validatedData['numero']);
 
-        // Formate la date d'expiration pour le stockage
         $dateExpiration = \Carbon\Carbon::createFromFormat('Y-m', $validatedData['date_expiration'])->format('m/y');
 
-        // Création de la carte de crédit
-        $carte = new CarteCredit;
-        $carte->user_id = auth()->user()->id; // Associe l'utilisateur connecté
-        $carte->numero = $numero; // Stocke le numéro sans les tirets ni espaces
-        $carte->nom_titulaire = $validatedData['nom_titulaire']; // Stocke le nom du titulaire
-        $carte->date_expiration = $dateExpiration; // Stocke la date d'expiration formatée
-        $carte->cvc = $validatedData['cvc']; // Stocke le code CVC
-        $carte->save(); // Sauvegarde la carte
+        // Nettoyage des champs texte pour empêcher les balises HTML et XSS
+        $nomTitulaire = e($validatedData['nom_titulaire']); // Échappe le nom du titulaire pour éviter XSS
+        $cvc = $validatedData['cvc'];
 
-        // Redirige vers la liste des cartes avec un message de succès
+        $carte = new CarteCredit;
+        $carte->user_id = auth()->user()->id;
+        $carte->numero = $numero;
+        $carte->nom_titulaire = $nomTitulaire; // Stocke le nom du titulaire échappé
+        $carte->date_expiration = $dateExpiration;
+        $carte->cvc = $cvc;
+        $carte->save();
+
         return redirect()->route('carte-credit.index')->with('success', 'Carte de crédit ajoutée avec succès.');
     }
-
-
 
     /**
      * Display the specified credit card.
@@ -93,7 +89,13 @@ class CarteCreditController extends Controller
             'cvc' => 'required|numeric|digits:3',
         ]);
 
-        $carteCredit->update($request->all());
+        // Nettoyage des données avant de mettre à jour la carte
+        $carteCredit->numero = str_replace(['-', ' '], '', $request->numero);
+        $carteCredit->nom_titulaire = e($request->nom_titulaire); // Échappe le nom du titulaire
+        $carteCredit->date_expiration = \Carbon\Carbon::createFromFormat('Y-m', $request->date_expiration)->format('m/y');
+        $carteCredit->cvc = $request->cvc;
+
+        $carteCredit->save();
 
         return redirect()->route('carte-credit.index')->with('success', 'Carte de crédit mise à jour avec succès.');
     }
@@ -103,11 +105,8 @@ class CarteCreditController extends Controller
      */
     public function destroy(CarteCredit $carteCredit)
     {
-
         $carteCredit->delete();
 
         return redirect()->route('carte-credit.index')->with('success', 'Carte de crédit supprimée avec succès.');
-
     }
-
 }

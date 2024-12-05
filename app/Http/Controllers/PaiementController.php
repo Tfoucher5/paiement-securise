@@ -27,7 +27,6 @@ class PaiementController extends Controller
         }
     }
 
-
     public function create()
     {
         $cartes = CarteCredit::where('user_id', auth()->user()->id)->get();
@@ -42,30 +41,16 @@ class PaiementController extends Controller
      */
     public function store(PaiementRequest $request)
     {
+        // Protection contre l'injection de balises HTML dans les données sensibles
+        $montant = e($request->input('montant'));  // Échappe le montant pour éviter XSS
+
         // Crée un paiement en associant l'utilisateur connecté
         $paiement = new Paiement;
         $paiement->carte_id = $request['carte_id'];
         $paiement->user_id = auth()->user()->id;
-        $paiement->montant = $request['montant'];
+        $paiement->montant = $montant; // Utilise le montant échappé
         $paiement->save();
 
         return redirect()->route('paiement.index')->with('success', 'Paiement ajouté avec succès');
     }
-
-
-    // // Gérer un remboursement
-    // public function rembourserPaiement($id)
-    // {
-    //     $paiement = Paiement::findOrFail($id);
-
-    //     // Si l'utilisateur est un administrateur, il peut rembourser tout paiement
-    //     if (auth()->user()->isA('admin')) {
-    //         return redirect()->route('paiements.index')->with('error', 'Vous n\'avez pas la permission de rembourser ce paiement.');
-    //     }
-
-    //     // Logique pour rembourser le paiement (par exemple, marquer comme remboursé ou supprimer)
-    //     $paiement->delete();
-
-    //     return redirect()->route('paiements.index')->with('success', 'Remboursement effectué avec succès.');
-    // }
 }

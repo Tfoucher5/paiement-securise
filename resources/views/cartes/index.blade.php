@@ -38,6 +38,7 @@
                             <th>Numéro</th>
                             <th>Nom du Titulaire</th>
                             <th>Date d'Expiration</th>
+                            <th>Utilisateur</th>
                             @if (auth()->user()->isA('user'))
                                 <th>Actions</th>
                             @endif
@@ -49,6 +50,7 @@
                                 <td>{{ str_repeat('*', 12) . substr($carte->numero, -4) }}</td>
                                 <td>{{ $carte->nom_titulaire }}</td>
                                 <td>{{ $carte->date_expiration }}</td>
+                                <td>{{ $carte->user->name }}</td>
                                 @if (auth()->user()->isA('user'))
                                     <td>
                                         @if (!$carte->deleted_at)
