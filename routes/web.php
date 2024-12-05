@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PaiementController;
+use App\Http\Controllers\CarteCreditController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,6 +26,8 @@ Route::middleware('auth')->group(function () {
 
     // Rembourser un paiement (administrateur uniquement)
     Route::delete('/paiements/{paiement}', [PaiementController::class, 'rembourserPaiement'])->name('paiement.rembourser');
+
+    Route::resource('/carte-credit', CarteCreditController::class);
 });
 
 require __DIR__.'/auth.php';
