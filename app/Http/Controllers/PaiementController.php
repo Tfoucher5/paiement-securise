@@ -29,8 +29,11 @@ class PaiementController extends Controller
 
     public function create()
     {
-        $cartes = CarteCredit::where('user_id', auth()->user()->id)->get();
-        return view('paiements.create', compact('cartes'));
+        if (auth()->user()->isA('user'))
+        {
+            $cartes = CarteCredit::where('user_id', auth()->user()->id)->get();
+            return view('paiements.create', compact('cartes'));
+        }
     }
 
     /**
@@ -41,16 +44,19 @@ class PaiementController extends Controller
      */
     public function store(PaiementRequest $request)
     {
-        // Protection contre l'injection de balises HTML dans les données sensibles
-        $montant = e($request->input('montant'));  // Échappe le montant pour éviter XSS
+        if (auth()->user()->isA('user'))
+        {
+            // Protection contre l'injection de balises HTML dans les données sensibles
+            $montant = e($request->input('montant'));  // Échappe le montant pour éviter XSS
 
-        // Crée un paiement en associant l'utilisateur connecté
-        $paiement = new Paiement;
-        $paiement->carte_id = $request['carte_id'];
-        $paiement->user_id = auth()->user()->id;
-        $paiement->montant = $montant; // Utilise le montant échappé
-        $paiement->save();
+            // Crée un paiement en associant l'utilisateur connecté
+            $paiement = new Paiement;
+            $paiement->carte_id = $request['carte_id'];
+            $paiement->user_id = auth()->user()->id;
+            $paiement->montant = $montant; // Utilise le montant échappé
+            $paiement->save();
 
-        return redirect()->route('paiement.index')->with('success', 'Paiement ajouté avec succès');
+            return redirect()->route('paiement.index')->with('success', 'Paiement ajouté avec succès');
+        }
     }
 }

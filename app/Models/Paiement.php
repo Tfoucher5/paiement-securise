@@ -20,6 +20,6 @@ class Paiement extends Model
 
     public function carte()
     {
-        return $this->belongsTo(CarteCredit::class);
+        return $this->belongsTo(CarteCredit::class)->withTrashed();
     }
 }
