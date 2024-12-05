@@ -8,7 +8,6 @@
                 @if (auth()->user()->isA('user'))
                     <a class="btn btn-success" href="{{ route('paiement.create') }}">Ajouter un paiement</a>
                 @endif
-
             </div>
 
             @if ($paiements->isEmpty())
