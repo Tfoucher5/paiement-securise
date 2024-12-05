@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Paiement;
+use App\Models\CarteCredit;
 use Illuminate\Http\Request;
+use App\Http\Requests\PaiementRequest;
 use Illuminate\Support\Facades\Auth;
 
 class PaiementController extends Controller
@@ -16,35 +18,38 @@ class PaiementController extends Controller
 
     public function index()
     {
-        $paiements = Paiement::where('user_id', Auth::id())->get();
-        return view('paiements.index', compact('paiements'));
+        if (auth()->user()->isA('admin')) {
+            $paiements = Paiement::all();
+            return view('paiements.index', compact('paiements'));
+        } else {
+            $paiements = Paiement::where('user_id', Auth::id())->get();
+            return view('paiements.index', compact('paiements'));
+        }
     }
 
 
     public function create()
     {
-        $paiements = Paiement::all();
-        return view('paiements.create', compact('paiements'));
+        $cartes = CarteCredit::where('user_id', auth()->user()->id)->get();
+        return view('paiements.create', compact('cartes'));
     }
 
-    public function store()
+    /**
+     * Enregistre un nouveau paiement.
+     *
+     * @param  \App\Http\Requests\PaiementRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(PaiementRequest $request)
     {
-        $request->validate([
-            'montant' => 'required|numeric|min:0.01',
-            'carte_4_premiers' => 'required|string|size:4',
-            'carte_4_derniers' => 'required|string|size:4',
-            'date_expiration' => 'required|date',
-            'num_transaction' => 'required|string|unique:paiements',
-        ]);
+        // Crée un paiement en associant l'utilisateur connecté
+        $paiement = new Paiement;
+        $paiement->carte_id = $request['carte_id'];
+        $paiement->user_id = auth()->user()->id;
+        $paiement->montant = $request['montant'];
+        $paiement->save();
 
-        $paiement = Paiement::create([
-            'user_id' => Auth::id(),
-            'montant' => $request->montant,
-            'date_expiration' => $request->date_expiration,
-            'num_transaction' => $request->num_transaction,
-        ]);
-
-        return redirect()->route('paiements.index')->with('success', 'Paiement enregistré avec succès.');
+        return redirect()->route('paiement.index')->with('success', 'Paiement ajouté avec succès');
     }
 
 
