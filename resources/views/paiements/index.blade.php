@@ -18,7 +18,7 @@
                 <th>Carte</th>
                 <th>Date d'expiration</th>
                 <th>Transaction</th>
-                @if (auth()->user()->hasRole('admin'))
+                @if (auth()->user()->isA('admin'))
                     <th>Action</th>
                 @endif
             </tr>
