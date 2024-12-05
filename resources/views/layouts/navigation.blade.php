@@ -12,8 +12,19 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                    <x-nav-link :href="route('paiement.index')" :active="request()->routeIs('paiement.index')">
+                        @if (auth()->user()->isA('admin'))
+                            Paiements
+                        @else
+                            Mes Paiements
+                        @endif
+                    </x-nav-link>
+                    <x-nav-link :href="route('carte-credit.index')" :active="request()->routeIs('carte-credit.index')">
+                        @if (auth()->user()->isA('admin'))
+                            Cartes
+                        @else
+                            Mes Cartes
+                        @endif
                     </x-nav-link>
                 </div>
             </div>

@@ -4,23 +4,25 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-
 return new class extends Migration
 {
     public function up()
     {
-        Schema::create('cartes_credit', function (Blueprint $table) {
+        Schema::create('carte_credits', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('numero')->unique(); // Chiffré
-            $table->date('date_expiration');
-            $table->string('type')->nullable(); // Visa, MasterCard, etc.
+            $table->unsignedBigInteger('user_id');
+            $table->char('numero', 16)->unique();
+            $table->string('nom_titulaire');
+            $table->string('date_expiration', 5);
+            $table->char('cvc', 3);
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->softDeletes();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('cartes_credit');
+        Schema::dropIfExists('carte_credits');
     }
 };
