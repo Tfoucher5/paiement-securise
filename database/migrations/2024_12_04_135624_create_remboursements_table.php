@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('paiement_id');
             $table->unsignedBigInteger('carte_id');
+            $table->float('montant');
             $table->foreign('paiement_id')->references('id')->on('paiements')->onDelete('cascade');
             $table->foreign('carte_id')->references('id')->on('carte_credits')->onDelete('cascade');
             $table->timestamps();

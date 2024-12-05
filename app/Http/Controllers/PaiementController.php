@@ -16,8 +16,13 @@ class PaiementController extends Controller
 
     public function index()
     {
-        $paiements = Paiement::where('user_id', Auth::id())->get();
-        return view('paiements.index', compact('paiements'));
+        if (auth()->user()->isA('admin')) {
+            $paiements = Paiement::all();
+            return view('paiements.index', compact('paiements'));
+        } else {
+            $paiements = Paiement::where('user_id', Auth::id())->get();
+            return view('paiements.index', compact('paiements'));
+        }
     }
 
 

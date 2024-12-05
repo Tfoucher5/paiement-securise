@@ -14,12 +14,12 @@
                     <div class="flex justify-between align-items-center my-5 border rounded">
                             <div class='min-w-48 my-auto text-center'>{{ $paiement->user->name }}</div>
                             <div class='min-w-48 my-auto text-center'>{{ $paiement->montant }}</div>
-                            <div class='min-w-48 my-auto text-center'>{{ $paiement->carte->numero }}</div>
+                            <div class='min-w-48 my-auto text-center'>{{ str_repeat('*', 12) . substr($paiement->carte->numero, -4) }}</div>
                             <div class='min-w-48 my-auto text-center'>{{ \Carbon\Carbon::parse($paiement->created_at)->translatedFormat('j F Y') }}</div>
 
                         @if (auth()->user()->isA('admin'))
                             <div class="flex gap-2">
-                                <a class="flex justify-center gap-2 p-2 px-5 rounded bg-blue-300" href="{{ route('remboursement.index', $paiement) }}">{{ __("Remboursement") }}</a>
+                                <a class="flex justify-center gap-2 p-2 px-5 rounded bg-blue-300" href="{{ route('remboursement.create', $paiement) }}">{{ __("Remboursement") }}</a>
                             </div>
                         @endif
 

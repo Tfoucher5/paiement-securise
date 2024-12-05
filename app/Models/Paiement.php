@@ -20,4 +20,9 @@ class Paiement extends Model
     {
         return $this->belongsTo(CarteCredit::class);
     }
+
+    public function remboursement()
+    {
+        return $this->hasMany(Remboursement::class);
+    }
 }

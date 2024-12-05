@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Paiement;
 use App\Models\CarteCredit;
 use App\Models\Remboursement;
@@ -19,7 +20,7 @@ class Remboursement extends Model
 
     public function carte()
     {
-        return $this->belongsTo(CarteCredit::class);
+        return $this->belongsTo(CarteCredit::class, 'carte_id');
     }
 }
 
