@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Paiement;
+use App\Models\CarteCredit;
 use Illuminate\Http\Request;
+use App\Http\Requests\PaiementRequest;
 use Illuminate\Support\Facades\Auth;
 
 class PaiementController extends Controller
@@ -25,47 +27,36 @@ class PaiementController extends Controller
         }
     }
 
-
     public function create()
     {
-        $paiements = Paiement::all();
-        return view('paiements.create', compact('paiements'));
+        if (auth()->user()->isA('user'))
+        {
+            $cartes = CarteCredit::where('user_id', auth()->user()->id)->get();
+            return view('paiements.create', compact('cartes'));
+        }
     }
 
-    public function store()
+    /**
+     * Enregistre un nouveau paiement.
+     *
+     * @param  \App\Http\Requests\PaiementRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(PaiementRequest $request)
     {
-        $request->validate([
-            'montant' => 'required|numeric|min:0.01',
-            'carte_4_premiers' => 'required|string|size:4',
-            'carte_4_derniers' => 'required|string|size:4',
-            'date_expiration' => 'required|date',
-            'num_transaction' => 'required|string|unique:paiements',
-        ]);
+        if (auth()->user()->isA('user'))
+        {
+            // Protection contre l'injection de balises HTML dans les données sensibles
+            $montant = e($request->input('montant'));  // Échappe le montant pour éviter XSS
 
-        $paiement = Paiement::create([
-            'user_id' => Auth::id(),
-            'montant' => $request->montant,
-            'date_expiration' => $request->date_expiration,
-            'num_transaction' => $request->num_transaction,
-        ]);
+            // Crée un paiement en associant l'utilisateur connecté
+            $paiement = new Paiement;
+            $paiement->carte_id = $request['carte_id'];
+            $paiement->user_id = auth()->user()->id;
+            $paiement->montant = $montant; // Utilise le montant échappé
+            $paiement->save();
 
-        return redirect()->route('paiements.index')->with('success', 'Paiement enregistré avec succès.');
+            return redirect()->route('paiement.index')->with('success', 'Paiement ajouté avec succès');
+        }
     }
-
-
-    // // Gérer un remboursement
-    // public function rembourserPaiement($id)
-    // {
-    //     $paiement = Paiement::findOrFail($id);
-
-    //     // Si l'utilisateur est un administrateur, il peut rembourser tout paiement
-    //     if (auth()->user()->isA('admin')) {
-    //         return redirect()->route('paiements.index')->with('error', 'Vous n\'avez pas la permission de rembourser ce paiement.');
-    //     }
-
-    //     // Logique pour rembourser le paiement (par exemple, marquer comme remboursé ou supprimer)
-    //     $paiement->delete();
-
-    //     return redirect()->route('paiements.index')->with('success', 'Remboursement effectué avec succès.');
-    // }
 }

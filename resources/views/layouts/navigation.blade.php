@@ -19,6 +19,13 @@
                             Mes Paiements
                         @endif
                     </x-nav-link>
+                    <x-nav-link :href="route('remboursement.index')" :active="request()->routeIs('remboursement.index')">
+                        @if (auth()->user()->isA('admin'))
+                            Remboursements
+                        @else
+                            Mes Remboursements
+                        @endif
+                    </x-nav-link>
                     <x-nav-link :href="route('carte-credit.index')" :active="request()->routeIs('carte-credit.index')">
                         @if (auth()->user()->isA('admin'))
                             Cartes

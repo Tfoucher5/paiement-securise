@@ -11,6 +11,8 @@ class Paiement extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['numero', 'user_id'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -18,7 +20,7 @@ class Paiement extends Model
 
     public function carte()
     {
-        return $this->belongsTo(CarteCredit::class);
+        return $this->belongsTo(CarteCredit::class)->withTrashed();
     }
 
     public function remboursement()
