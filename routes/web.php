@@ -22,7 +22,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('/paiement', PaiementController::class);
     Route::resource('/carte-credit', CarteCreditController::class);
     Route::resource('/remboursement', RemboursementController::class);
-
 });
 
 require __DIR__.'/auth.php';
