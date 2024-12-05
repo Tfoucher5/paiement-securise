@@ -14,6 +14,11 @@ class PaiementController extends Controller
         auth()->check();
     }
 
+    public function index()
+    {
+        return view('paiements.index');
+    }
+
     // Enregistrer un paiement
     public function enregistrerPaiement(Request $request)
     {
