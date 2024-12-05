@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('remboursements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('paiement_id')->constrained('paiements')->onDelete('cascade');
-            $table->decimal('montant', 10, 2);
+            $table->unsignedBigInteger('paiement_id');
+            $table->unsignedBigInteger('carte_id');
+            $table->foreign('paiement_id')->references('id')->on('paiements')->onDelete('cascade');
+            $table->foreign('carte_id')->references('id')->on('carte_credits')->onDelete('cascade');
             $table->timestamps();
         });
     }
