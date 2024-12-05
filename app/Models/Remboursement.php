@@ -1,27 +1,25 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Models;
 
 use App\Models\Paiement;
+use App\Models\CarteCredit;
 use App\Models\Remboursement;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
 
-class RemboursementController extends Controller
+class Remboursement extends Model
 {
-    public function rembourser(Request $request, Paiement $paiement)
+    use HasFactory;
+
+    public function paiement()
     {
-        $this->authorize('rembourser', $paiement);
+        return $this->belongsTo(Paiement::class);
+    }
 
-        $request->validate([
-            'montant' => 'required|numeric|min:0.01|max:' . $paiement->montant,
-        ]);
-
-        $remboursement = Remboursement::create([
-            'paiement_id' => $paiement->id,
-            'montant' => $request->montant,
-        ]);
-
-        return response()->json($remboursement, 201);
+    public function carte()
+    {
+        return $this->belongsTo(CarteCredit::class);
     }
 }
 

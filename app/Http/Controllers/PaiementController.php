@@ -40,8 +40,6 @@ class PaiementController extends Controller
         $paiement = Paiement::create([
             'user_id' => Auth::id(),
             'montant' => $request->montant,
-            'carte_4_premiers' => $request->carte_4_premiers,
-            'carte_4_derniers' => $request->carte_4_derniers,
             'date_expiration' => $request->date_expiration,
             'num_transaction' => $request->num_transaction,
         ]);
