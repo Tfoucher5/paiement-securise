@@ -35,7 +35,7 @@
 
                                         @if (auth()->user()->isA('admin'))
                                                 <div class="d-flex justify-content-center">
-                                                    <a class="btn btn-primary btn-sm" href="{{ route('remboursement.create', $paiement) }}">{{ __("Remboursement") }}</a>
+                                                    <a class="btn btn-primary btn-sm" href="{{ route('remboursement.create', $paiement->num_commande) }}">{{ __("Remboursement") }}</a>
                                                 </div>
                                         @endif
                                     </div>

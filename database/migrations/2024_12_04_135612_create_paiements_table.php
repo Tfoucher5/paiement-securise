@@ -13,6 +13,7 @@ return new class extends Migration
             $table->unsignedBigInteger('carte_id');
             $table->unsignedBigInteger('user_id');
             $table->float('montant');
+            $table->string('num_commande', 10)->unique();
             $table->foreign('carte_id')->references('id')->on('carte_credits')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

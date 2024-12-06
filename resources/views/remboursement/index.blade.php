@@ -7,7 +7,7 @@
             @forelse ($remboursements as $remboursement)
                 <li class="list-group-item">
                     <div class="flex justify-between align-items-center my-5 border rounded">
-                            <div class='min-w-48 my-auto text-center'>{{ $remboursement->id}}</div>
+                            <div class='min-w-48 my-auto text-center'>{{ $remboursement->paiement->num_commande}}</div>
                             <div class='min-w-48 my-auto text-center'>{{ $remboursement->carte->numero}}</div>
                             <div class='min-w-48 my-auto text-center'>{{ $remboursement->paiement->montant }}</div>
                             <div class='min-w-48 my-auto text-center'>{{ $remboursement->montant }}</div>
