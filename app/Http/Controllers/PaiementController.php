@@ -20,10 +20,13 @@ class PaiementController extends Controller
     public function index()
     {
         if (auth()->user()->isA('admin')) {
-            $paiements = Paiement::all()->orderBy('created_at', 'desc');
+            $paiements = Paiement::orderBy('created_at', 'desc')->get();
         } else {
-            $paiements = Paiement::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+            $paiements = Paiement::where('user_id', Auth::id())
+                ->orderBy('created_at', 'desc')
+                ->get();
         }
+
         return view('paiements.index', compact('paiements'));
     }
 
