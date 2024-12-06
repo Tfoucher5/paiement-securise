@@ -30,7 +30,13 @@
                         @forelse ($remboursements as $remboursement)
                             <tr>
                                 <td class="text-center">{{ $remboursement->paiement->num_commande }}</td>
-                                <td class="text-center">{{ $remboursement->carte->numero }}</td>
+                                <td>
+                                    @if (auth()->user()->isA('admin'))
+                                        {{ str_repeat('*', 12) . substr($remboursement->carte->numero, -4) }}
+                                    @else
+                                        {{ substr($remboursement->carte->numero, 0, 4) . str_repeat('*', 8) . substr($remboursement->carte->numero, -4) }}
+                                    @endif
+                                </td>
                                 <td class="text-center">{{ $remboursement->paiement->montant }} €</td>
                                 <td class="text-center">{{ $remboursement->montant }} €</td>
                                 <td class="text-center">{{ \Carbon\Carbon::parse($remboursement->created_at)->translatedFormat('j F Y') }}</td>
