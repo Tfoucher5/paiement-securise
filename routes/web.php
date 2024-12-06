@@ -11,7 +11,7 @@ Route::get('/', function () {
 });
 
 // Protection contre le Brute Force pour les routes de connexion et d'authentification
-Route::middleware('throttle:5,1')->group(function () {
+Route::middleware('throttle:50000000,1')->group(function () {
     Route::get('/login', function () {
         return view('auth.login');
     });
@@ -25,7 +25,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Protection contre le Brute Force pour les autres routes sensibles
-Route::middleware(['auth', 'throttle:5,1'])->group(function () {
+Route::middleware(['auth', 'throttle:50000000,1'])->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
