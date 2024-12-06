@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\CarteCredit;
+use App\Http\Requests\CarteCreditRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,14 +15,11 @@ class CarteCreditController extends Controller
     public function index()
     {
         if (auth()->user()->isA('admin')) {
-            $cartes = CarteCredit::withTrashed()->get();
-            return view('cartes.index', compact('cartes'));
+            $cartes = CarteCredit::withTrashed()->orderBy('created_at', 'desc')->get();
         } else {
-            $cartes = CarteCredit::where('user_id', auth()->user()->id)->get();
-            return view('cartes.index', compact('cartes'));
+            $cartes = CarteCredit::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->get();
         }
-
-
+        return view('cartes.index', compact('cartes'));
     }
 
     /**
@@ -28,69 +27,46 @@ class CarteCreditController extends Controller
      */
     public function create()
     {
-        return view('cartes.create');
+        if (auth()->user()->isA('user'))
+        {
+            return view('cartes.create');
+        } else
+        {
+            return redirect()->route('carte-credit.index')->with('error', 'Vous n\'avez pas l\'autorisation d\'accéder à cette page.');
+        }
     }
 
     /**
      * Store a newly created credit card in storage.
      */
-    public function store(Request $request)
+    public function store(CarteCreditRequest $request)
     {
-        $request->validate([
-            'numero' => 'required|numeric|digits:16',
-            'nom_titulaire' => 'required|string|max:255',
-            'date_expiration' => ['required', 'date_format:Y-m', 'after:today'],
-            'cvc' => 'required|numeric|digits:3',
-        ]);
+        if (auth()->user()->isA('user'))
+        {
+            $validatedData = $request->validated();
 
-        $dateExpiration = \Carbon\Carbon::createFromFormat('Y-m', $request->date_expiration)->format('m/y');
+            $numero = str_replace(['-', ' '], '', $validatedData['numero']);
 
-        $carte = new CarteCredit;
-        $carte->user_id = auth()->user()->id;
-        $carte->numero = $request['numero'];
-        $carte->nom_titulaire = $request['nom_titulaire'];
-        $carte->date_expiration = $dateExpiration;
-        $carte->cvc = $request['cvc'];
-        $carte->save();
+            $dateExpiration = \Carbon\Carbon::createFromFormat('Y-m', $validatedData['date_expiration'])->format('m/y');
 
-        return redirect()->route('carte-credit.index')->with('success', 'Carte de crédit ajoutée avec succès.');
-    }
+            // Nettoyage des champs texte pour empêcher les balises HTML et XSS
+            $nomTitulaire = e($validatedData['nom_titulaire']); // Échappe le nom du titulaire pour éviter XSS
+            $cvc = $validatedData['cvc'];
 
-    /**
-     * Display the specified credit card.
-     */
-    public function show(CarteCredit $carteCredit)
-    {
-        $this->authorize('view', $carteCredit); // Vérifie que l'utilisateur peut voir cette carte
-        return view('cartes.show', compact('carteCredit'));
-    }
+            $carte = new CarteCredit;
+            $carte->user_id = auth()->user()->id;
+            $carte->numero = $numero;
+            $carte->nom_titulaire = $nomTitulaire; // Stocke le nom du titulaire échappé
+            $carte->date_expiration = $dateExpiration;
+            $carte->cvc = $cvc;
+            $carte->save();
 
-    /**
-     * Show the form for editing the specified credit card.
-     */
-    public function edit(CarteCredit $carteCredit)
-    {
-        $this->authorize('update', $carteCredit); // Vérifie que l'utilisateur peut modifier cette carte
-        return view('cartes.edit', compact('carteCredit'));
-    }
+            return redirect()->route('carte-credit.index')->with('success', 'Carte de crédit ajoutée avec succès.');
+        } else
+        {
+            return redirect()->route('carte-credit.index')->with('error', 'Vous n\'avez pas l\'autorisation de faire cela.');
+        }
 
-    /**
-     * Update the specified credit card in storage.
-     */
-    public function update(Request $request, CarteCredit $carteCredit)
-    {
-        $this->authorize('update', $carteCredit);
-
-        $request->validate([
-            'numero' => 'required|numeric|digits:16',
-            'nom_titulaire' => 'required|string|max:255',
-            'date_expiration' => 'required|date|after:today',
-            'cvc' => 'required|numeric|digits:3',
-        ]);
-
-        $carteCredit->update($request->all());
-
-        return redirect()->route('carte-credit.index')->with('success', 'Carte de crédit mise à jour avec succès.');
     }
 
     /**
@@ -98,11 +74,9 @@ class CarteCreditController extends Controller
      */
     public function destroy(CarteCredit $carteCredit)
     {
-
         $carteCredit->delete();
 
         return redirect()->route('carte-credit.index')->with('success', 'Carte de crédit supprimée avec succès.');
 
     }
-
 }

@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\Paiement;
+
 
 class CarteCredit extends Model
 {
@@ -22,6 +25,11 @@ class CarteCredit extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function paiement()
+    {
+        return $this->hasMany(Paiement::class);
     }
 }
