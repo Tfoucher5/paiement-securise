@@ -11,7 +11,7 @@ Route::get('/', function () {
 });
 
 // Protection contre le Brute Force pour les routes de connexion et d'authentification
-Route::middleware('throttle:50000000,1')->group(function () {
+Route::middleware('throttle:3,1')->group(function () {
     Route::get('/login', function () {
         return view('auth.login');
     });
