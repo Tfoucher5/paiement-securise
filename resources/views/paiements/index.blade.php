@@ -38,6 +38,10 @@
                                             <div class="d-flex justify-content-center">
                                                 <a class="btn btn-primary btn-sm" href="{{ route('remboursement.create', $paiement->num_commande) }}">{{ __("Remboursement") }}</a>
                                             </div>
+                                        @else
+                                            <div class="alert alert-warning text-center mt-2" role="alert">
+                                                <strong>Déjà remboursé</strong>
+                                            </div>
                                         @endif
                                     </div>
                                 </div>

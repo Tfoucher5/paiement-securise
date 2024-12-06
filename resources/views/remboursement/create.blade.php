@@ -17,7 +17,7 @@
 
         <div class="card" style="width: 100%; max-width: 400px;">
             <div class="card-body">
-                <form action="{{ route('remboursement.store') }}" method="POST">
+                <form action="{{ route('remboursement.store') }}" method="POST" onsubmit="return validateForm()">
                     @csrf
 
                     @foreach ($paiements as $paiement)
@@ -71,5 +71,20 @@
             document.getElementById('montant_rembourse_display').innerText = montantRembourse.toFixed(2) + ' €';
             document.getElementById('montant_rembourse').value = montantRembourse.toFixed(2);
         }
+        function validateForm() {
+            const montantTotal = parseFloat(document.getElementById('montant_total').value);
+            const montantRembourse = parseFloat(document.getElementById('montant_rembourse').value);
+
+            if (montantRembourse > montantTotal) {
+                alert('Le montant à rembourser ne peut pas être supérieur au montant du paiement.');
+                return false; // Empêche la soumission du formulaire
+            }
+
+            return true; // Permet la soumission du formulaire
+        }
+
+        // Ajoutez l'attribut `onsubmit` à votre formulaire pour déclencher la validation
+        document.querySelector('form').onsubmit = validateForm;
+
     </script>
 @endsection
