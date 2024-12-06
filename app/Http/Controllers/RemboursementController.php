@@ -34,8 +34,13 @@ class RemboursementController extends Controller
      */
     public function create(Remboursement $remboursement, $numCommande)
     {
-        $paiements = Paiement::where('num_commande', $numCommande)->get();
-        return view('remboursement.create', compact('paiements'));
+        if (auth()->user()->isA('admin')) {
+            $paiements = Paiement::where('num_commande', $numCommande)->get();
+            return view('remboursement.create', compact('paiements'));
+        }
+        else {
+            return redirect()->route('remboursement.index')->with('error', 'Vous n\'avez pas l\'autorisation d\'accéder à cette page !');
+        }
     }
 
     /**
@@ -43,21 +48,25 @@ class RemboursementController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'pourcentage' => 'required|integer|min:0|max:100',
-            'montant_rembourse' => 'required|numeric|min:0.01',
-        ]);
+        if (auth()->user()->isA('admin')) {
+            $request->validate([
+                'pourcentage' => 'required|integer|min:0|max:100',
+                'montant_rembourse' => 'required|numeric|min:0.01',
+            ]);
 
-        $data = $request->all();
-        $paiement = Paiement::with('carte')->find($data['paiement_id']);
+            $data = $request->all();
+            $paiement = Paiement::with('carte')->find($data['paiement_id']);
 
-        $remboursement = new Remboursement();
-        $remboursement->paiement_id = $paiement->id;
-        $remboursement->carte_id = $paiement->carte_id;
-        $remboursement->montant = $data['montant_rembourse'];
+            $remboursement = new Remboursement();
+            $remboursement->paiement_id = $paiement->id;
+            $remboursement->carte_id = $paiement->carte_id;
+            $remboursement->montant = $data['montant_rembourse'];
 
-        $remboursement->save();
+            $remboursement->save();
 
-        return redirect()->route('remboursement.index')->with('success', 'Remboursement effectué avec succès.');
+            return redirect()->route('remboursement.index')->with('success', 'Remboursement effectué avec succès.');
+        } else {
+            return redirect()->route('remboursement.index')->with('error', 'Vous n\'avez pas l\'autorisation de faire cela !');
+        }
     }
 }
