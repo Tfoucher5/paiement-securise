@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/paiement/create', [PaiementController::class, 'create'])->name('paiement.create');
     Route::post('/paiement', [PaiementController::class, 'store'])
         ->name('paiement.store')
-        ->middleware('throttle:2,1');
+        ->middleware('throttle:6,1');
 
     // Routes des cartes de crédit
     Route::get('/carte-credit', [CarteCreditController::class, 'index'])->name('carte-credit.index');
@@ -44,15 +44,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/carte-credit/destroy/{carteCredit}', [CarteCreditController::class, 'destroy'])->name('carte-credit.destroy');
     Route::post('/carte-credit', [CarteCreditController::class, 'store'])
         ->name('carte-credit.store')
-        ->middleware('throttle:2,1');
+        ->middleware('throttle:4,1');
 
 
     // Routes des remboursements
     Route::get('/remboursement', [RemboursementController::class, 'index'])->name('remboursement.index');
-    Route::get('/remboursement/create', [RemboursementController::class, 'create'])->name('remboursement.create');
+    Route::get('/remboursement/create/{numCommande}', [RemboursementController::class, 'create'])->name('remboursement.create');
     Route::post('/remboursement', [RemboursementController::class, 'store'])
         ->name('remboursement.store')
-        ->middleware('throttle:3,1');
+        ->middleware('throttle:6,1');
 
 });
 

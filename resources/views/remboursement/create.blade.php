@@ -20,19 +20,19 @@
                 <form action="{{ route('remboursement.store') }}" method="POST">
                     @csrf
 
-                    @foreach ($paiement as $paiementItem)
-                    <input type="hidden" name="paiement_id" value="{{ $paiementItem->id }}">
+                    @foreach ($paiements as $paiement)
+                    <input type="hidden" name="paiement_id" value="{{ $paiement->id }}">
                         <div class="mb-3">
                             <label class="form-label">
-                                Carte : {{ str_repeat('*', 12) . substr($paiementItem->carte->numero, -4) }}
+                                Carte : {{ str_repeat('*', 12) . substr($paiement->carte->numero, -4) }}
                             </label><br>
                             <label class="form-label">
-                                Titulaire : {{ $paiementItem->carte->user->name }}
+                                Titulaire : {{ $paiement->carte->user->name }}
                             </label><br>
                             <label class="form-label">
-                                Montant Total : <span id="montant_total_display">{{ $paiementItem->montant }}</span> €
+                                Montant Total : <span id="montant_total_display">{{ $paiement->montant }}</span> €
                             </label>
-                            <input type="hidden" id="montant_total" value="{{ $paiementItem->montant }}">
+                            <input type="hidden" id="montant_total" value="{{ $paiement->montant }}">
                         </div>
                     @endforeach
 

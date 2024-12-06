@@ -32,10 +32,10 @@ class RemboursementController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Remboursement $remboursement)
+    public function create(Remboursement $remboursement, $numCommande)
     {
-        $paiement = Paiement::with('carte.user')->where('id', $remboursement->id)->get();
-        return view('remboursement.create', compact('remboursement', 'paiement'));
+        $paiements = Paiement::where('num_commande', $numCommande)->get();
+        return view('remboursement.create', compact('paiements'));
     }
 
     /**
