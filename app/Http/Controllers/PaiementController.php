@@ -21,11 +21,10 @@ class PaiementController extends Controller
     {
         if (auth()->user()->isA('admin')) {
             $paiements = Paiement::all()->orderBy('created_at', 'desc');
-            return view('paiements.index', compact('paiements'));
         } else {
             $paiements = Paiement::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
-            return view('paiements.index', compact('paiements'));
         }
+        return view('paiements.index', compact('paiements'));
     }
 
     public function create()

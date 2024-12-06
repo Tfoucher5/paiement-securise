@@ -15,7 +15,9 @@
                     </div>
                 </li>
                 @empty
-                    {{ __('Unknown remboursement ') }}
+                    <div class="alert alert-warning mt-3 text-center">
+                        Aucun remboursement enregistré
+                    </div>
                 @endforelse
             </ul>
         </div>
