@@ -34,7 +34,7 @@
                                     <p class="text-muted"><strong>Date :</strong> {{ \Carbon\Carbon::parse($paiement->created_at)->translatedFormat('j F Y') }}</p>
                                     @if (auth()->user()->isA('admin'))
                                         <div class="d-flex justify-content-center">
-                                            <a class="btn btn-primary btn-sm" href="{{ route('remboursement.index', $paiement) }}">{{ __("Remboursement") }}</a>
+                                            <a class="btn btn-primary btn-sm" href="{{ route('remboursement.create', $paiement) }}">{{ __("Remboursement") }}</a>
                                         </div>
                                     @endif
                                 </div>
