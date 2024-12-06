@@ -9,6 +9,17 @@
                     <a class="btn btn-success" href="{{ route('paiement.create') }}">Ajouter un paiement</a>
                 @endif
             </div>
+            @if(session()->has('success'))
+            <div class="alert alert-success mt-3">
+                {{ session('success') }}
+            </div>
+            @endif
+
+            @if(session()->has('error'))
+                <div class="alert alert-danger mt-3">
+                    {{ session('error') }}
+                </div>
+            @endif
 
             @if ($paiements->isEmpty())
                 <div class="alert alert-info text-center">{{ __('Aucun paiement trouvé') }}</div>
@@ -38,7 +49,7 @@
                                             <div class="d-flex justify-content-center">
                                                 <a class="btn btn-primary btn-sm" href="{{ route('remboursement.create', $paiement->num_commande) }}">{{ __("Remboursement") }}</a>
                                             </div>
-                                        @else
+                                        @elseif (auth()->user()->isA('admin'))
                                             <div class="alert alert-warning text-center mt-2" role="alert">
                                                 <strong>Déjà remboursé</strong>
                                             </div>
