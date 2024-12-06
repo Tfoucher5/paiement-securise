@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Paiement;
 use App\Models\CarteCredit;
+use App\Models\Remboursement;
 use Illuminate\Http\Request;
 use App\Http\Requests\PaiementRequest;
 use Illuminate\Support\Facades\Auth;
@@ -19,10 +20,10 @@ class PaiementController extends Controller
     public function index()
     {
         if (auth()->user()->isA('admin')) {
-            $paiements = Paiement::all();
+            $paiements = Paiement::all()->orderBy('created_at', 'desc');
             return view('paiements.index', compact('paiements'));
         } else {
-            $paiements = Paiement::where('user_id', Auth::id())->get();
+            $paiements = Paiement::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
             return view('paiements.index', compact('paiements'));
         }
     }

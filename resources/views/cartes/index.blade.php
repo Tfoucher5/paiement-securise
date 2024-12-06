@@ -54,14 +54,16 @@
                                 @if (auth()->user()->isA('user'))
                                     <td>
                                         @if (!$carte->deleted_at)
-                                            <form action="{{ route('carte-credit.destroy', $carte) }}" method="POST" style="display:inline-block;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger" onclick="return confirm('Confirmer la suppression ?')">Supprimer</button>
-                                            </form>
-                                        @else
-                                            <span class="badge bg-secondary">Supprimée</span>
-                                        @endif
+                                        <form action="{{ route('carte-credit.destroy', $carte) }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Confirmer la suppression ?')">
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    @else
+                                        <span class="badge bg-secondary">Supprimée</span>
+                                    @endif
                                     </td>
                                 @endif
                             </tr>

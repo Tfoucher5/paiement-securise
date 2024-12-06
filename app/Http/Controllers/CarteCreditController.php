@@ -15,10 +15,10 @@ class CarteCreditController extends Controller
     public function index()
     {
         if (auth()->user()->isA('admin')) {
-            $cartes = CarteCredit::withTrashed()->get();
+            $cartes = CarteCredit::withTrashed()->orderBy('created_at', 'desc')->get();
             return view('cartes.index', compact('cartes'));
         } else {
-            $cartes = CarteCredit::where('user_id', auth()->user()->id)->get();
+            $cartes = CarteCredit::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->get();
             return view('cartes.index', compact('cartes'));
         }
     }
@@ -28,7 +28,7 @@ class CarteCreditController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->isA('admin'))
+        if (auth()->user()->isA('user'))
         {
             return view('cartes.create');
         } else
@@ -42,7 +42,7 @@ class CarteCreditController extends Controller
      */
     public function store(CarteCreditRequest $request)
     {
-        if (auth()->user()->isA('admin'))
+        if (auth()->user()->isA('user'))
         {
             $validatedData = $request->validated();
 
@@ -75,13 +75,9 @@ class CarteCreditController extends Controller
      */
     public function destroy(CarteCredit $carteCredit)
     {
-        if (auth()->user()->isA('user') && auth()->user()->id == $carteCredit->user_id) {
-            $carteCredit->delete();
+        $carteCredit->delete();
 
-            return redirect()->route('carte-credit.index')->with('success', 'Carte de crédit supprimée avec succès.');
-        } else {
-            return redirect()->route('carte-credit.index')->with('error', 'Vous n\'avez pas l\'autorisation de faire cela.');
-        }
+        return redirect()->route('carte-credit.index')->with('success', 'Carte de crédit supprimée avec succès.');
 
     }
 }
