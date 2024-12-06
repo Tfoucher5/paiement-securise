@@ -19,7 +19,7 @@
                 <table class="table table-bordered">
                     <thead style="background-color: #007bff; color: white;">
                         <tr>
-                            <th scope="col" class="text-center">ID</th>
+                            <th scope="col" class="text-center">Numero de Commande</th>
                             <th scope="col" class="text-center">Numéro de Carte</th>
                             <th scope="col" class="text-center">Montant Total</th>
                             <th scope="col" class="text-center">Montant Remboursé</th>
@@ -29,7 +29,7 @@
                     <tbody>
                         @forelse ($remboursements as $remboursement)
                             <tr>
-                                <td class="text-center">{{ $remboursement->id }}</td>
+                                <td class="text-center">{{ $remboursement->paiement->num_commande }}</td>
                                 <td class="text-center">{{ $remboursement->carte->numero }}</td>
                                 <td class="text-center">{{ $remboursement->paiement->montant }} €</td>
                                 <td class="text-center">{{ $remboursement->montant }} €</td>
