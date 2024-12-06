@@ -20,11 +20,10 @@ class PaiementController extends Controller
     {
         if (auth()->user()->isA('admin')) {
             $paiements = Paiement::all();
-            return view('paiements.index', compact('paiements'));
         } else {
             $paiements = Paiement::where('user_id', Auth::id())->get();
-            return view('paiements.index', compact('paiements'));
         }
+        return view('paiements.index', compact('paiements'));
     }
 
     public function create()
