@@ -19,8 +19,9 @@
                                 <div class="card shadow-sm">
                                     <div class="card-body">
                                         <h5 class="card-title text-center">{{ $paiement->user->name }}</h5>
-                                        <hr>
+                                        <hr><br>
                                         <p class="card-text">
+                                            <strong>Numero Commande :</strong> {{ $paiement->num_commande }}<br>
                                             <strong>Montant :</strong> {{ $paiement->montant }} €<br>
                                             <strong>Carte :</strong>
                                             @if (auth()->user()->isA('admin'))
