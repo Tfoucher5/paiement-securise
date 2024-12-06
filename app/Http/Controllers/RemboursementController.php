@@ -13,12 +13,14 @@ class RemboursementController extends Controller
      */
     public function index()
     {
+        $remboursements = remboursement::with('carte.user')->get();
+
         if (auth()->user()->isA('admin')) {
-            $remboursements = Remboursement::all();
+            $remboursements = Remboursement::all()->orderBy('created_at', 'desc');
         } else {
             $remboursements = Remboursement::whereHas('paiement', function ($query) {
                 $query->where('user_id', auth()->id());
-            })->get();
+            })->orderBy('created_at', 'desc')->get();
         }
 
         return view('remboursement.index', compact('remboursements'));
@@ -54,37 +56,5 @@ class RemboursementController extends Controller
         $remboursement->save();
 
         return redirect()->route('remboursement.index')->with('success', 'Remboursement effectué avec succès.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Remboursement $remboursement)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Remboursement $remboursement)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Remboursement $remboursement)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Remboursement $remboursement)
-    {
-        //
     }
 }

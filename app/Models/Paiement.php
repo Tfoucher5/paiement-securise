@@ -23,7 +23,8 @@ class Paiement extends Model
         return $this->belongsTo(CarteCredit::class)->withTrashed();
     }
 
-    public function remboursement()
+    public function remboursements()
+
     {
         return $this->hasMany(Remboursement::class);
     }
