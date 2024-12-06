@@ -4,7 +4,6 @@
     <div class="d-flex align-items-center" style="min-height: 100vh; flex-direction: column;">
         <!-- Titre centré -->
         <h3 class="display-4 mb-5 mt-5 text-center">Remboursements</h3>
-
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
