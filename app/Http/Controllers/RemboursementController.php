@@ -13,20 +13,17 @@ class RemboursementController extends Controller
      */
     public function index()
     {
-        $remboursements = remboursement::with('carte.user')->get();
-
         if (auth()->user()->isA('admin')) {
-            $remboursements = Remboursement::all();
-            if ($remboursements){
-                $remboursements->orderBy('created_at', 'desc');
-            }
+            $remboursements = Remboursement::with('carte.user')
+                ->orderBy('created_at', 'desc')
+                ->get();
         } else {
-            $remboursements = Remboursement::whereHas('paiement', function ($query) {
-                $query->where('user_id', auth()->id());
-            })->get();
-            if ($remboursements){
-                $remboursements->orderBy('created_at', 'desc');
-            }
+            $remboursements = Remboursement::with('carte.user')
+                ->whereHas('paiement', function ($query) {
+                    $query->where('user_id', auth()->id());
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
         }
 
         return view('remboursement.index', compact('remboursements'));
