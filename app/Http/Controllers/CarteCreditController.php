@@ -16,11 +16,10 @@ class CarteCreditController extends Controller
     {
         if (auth()->user()->isA('admin')) {
             $cartes = CarteCredit::withTrashed()->get();
-            return view('cartes.index', compact('cartes'));
         } else {
             $cartes = CarteCredit::where('user_id', auth()->user()->id)->get();
-            return view('cartes.index', compact('cartes'));
         }
+        return view('cartes.index', compact('cartes'));
     }
 
     /**
